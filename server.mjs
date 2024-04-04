@@ -81,7 +81,7 @@ router.add(
 async function serveFromRouter(server, request, response, next) {
   let resolved = await router.resolve(request, server).catch((error) => {
     if (error.status != null) return error;
-    return { body: String(err), status: 500 };
+    return { body: String(error), status: 500 };
   });
   if (!resolved) return next();
   let { body, status = 200, headers = defaultHeaders } = await resolved;
@@ -99,6 +99,7 @@ export class SkillShareServer {
     this.talks = talks;
     this.version = 0;
     this.waiting = [];
+
     let fileServer = serveStatic("./public");
     this.server = createServer((request, response) => {
       serveFromRouter(this, request, response, () => {
